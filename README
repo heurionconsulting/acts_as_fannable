@@ -1,0 +1,58 @@
+Acts As Fannable
+================================================================
+
+Allows users to become fans to different models.
+
+Installation
+----------------------------------------------------------------
+
+Install
+ * Run the following command:
+ go to vendors/plugins folder and run the following command
+ git clone git://github.com/heurionconsulting/acts_as_fannable.git
+ 
+ * Create a new rails migration and add the following self.up and self.down methods
+ 
+  def self.up
+    create_table "fans", :force => true do |t|
+      t.column "fannable_id", :integer, :default => 0, :null => false
+      t.column "fannable_type", :string, :default => "", :null => false
+      t.column "user_id", :integer, :default => 0, :null => false
+      t.time_stamps
+    end
+  
+    add_index "fans", ["user_id"], :name => "fk_fans_user"
+  end
+
+  def self.down
+    drop_table :fans
+  end
+
+Usage
+---------------------------------------------------------------
+ 
+ * Make your ActiveRecord model acts as fan.
+ 
+ class Model < ActiveRecord::Base
+ 	acts_as_fannable
+ end
+ 
+ * Add a fan to a model instance
+ 
+ model = Model.new
+ fan = Fan.new
+ fan.user_id = user.id (or self.current_user.id if acts_as_authenticated or restful authentication being used)
+ model.fans << fan
+ or 
+ model.add_fan(fan)
+ 
+Credits
+---------------------------------------------------------------------
+
+Satish N Kota - Heurion Consutling - This plugin is influenced by Acts As Commentable and I am thankful for them
+for writing a wonderful good code.
+
+License
+---------------------------------------------------------------------
+
+Refer to MIT License file
